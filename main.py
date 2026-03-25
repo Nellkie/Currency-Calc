@@ -1,5 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from course_getter import get_courses
+from PyQt5.QtGui import QDoubleValidator
 
 app = QApplication([])
 window = QWidget()
@@ -63,7 +65,20 @@ right_vbl.addLayout(roubles_hbl)
 main_hbl.addLayout(left_vbl)
 main_hbl.addLayout(right_vbl)
 
+eur_le.setValidator(QDoubleValidator())
 
+currency_btn.setEnabled(False)
+eur_le.textChanged.connect(lambda text: currency_btn.setEnabled(bool(text.strip())))
+
+def currency_convert():
+    amount = float(eur_le.text())
+    converted_courses = get_courses(amount)
+    dollars_le.setText(str(converted_courses["USD"]))
+    yens_le.setText(str(converted_courses["JPY"]))
+    tenges_le.setText(str(converted_courses["KZT"]))
+    roubles_le.setText(str(converted_courses["RUB"]))
+
+currency_btn.clicked.connect(currency_convert)
 
 window.setLayout(main_hbl)
 window.show()
